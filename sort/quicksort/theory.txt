@@ -1,0 +1,76 @@
+快速排序（Quick Sort）是一种基于分治思想的高效排序算法。其基本思想是通过一次排序将待排序的数组分成两个子数组，
+其中一个子数组的所有元素都小于（或等于）另一个子数组的所有元素。然后递归地对两个子数组继续应用快速排序，直到整个数组有序。以下是快速排序的主要步骤：
+
+快速排序步骤：
+选择基准元素（pivot）：
+从数组中选择一个元素作为“基准”，通常是第一个、最后一个、随机选取或中间的元素。
+
+划分操作（Partition）：
+重新排列数组，将比基准元素小的元素放在基准元素的左边，比基准元素大的元素放在基准元素的右边。
+
+递归排序：
+对基准元素左侧和右侧的子数组分别递归应用快速排序。
+
+合并：
+由于快速排序是在原地排序（不需要额外的内存），所以不需要合并过程，整个数组在递归完成后即为有序。
+
+举例说明：
+假设我们有一个数组 [3, 6, 8, 10, 1, 2, 1]：
+
+选择基准元素 3。
+划分数组：小于 3 的元素 [1, 2, 1] 放在左边，大于 3 的元素 [6, 8, 10] 放在右边。
+对两个子数组 [1, 2, 1] 和 [6, 8, 10] 递归应用快速排序。
+排序后得到 [1, 1, 2] 和 [6, 8, 10]。
+合并结果：最终排序后的数组是 [1, 1, 2, 3, 6, 8, 10]。
+时间复杂度：
+平均时间复杂度： O(n log n)
+最坏时间复杂度： O(n²) （当每次选择的基准元素恰好是最小或最大元素时）
+空间复杂度： O(log n)
+
+伪代码：
+function quicksort(arr, left, right):
+    if left < right then:
+        # Partition the array and get the pivot index
+        pivotIndex = partition(arr, left, right)
+        
+        # Recursively apply quicksort on both sides of the pivot
+        quicksort(arr, left, pivotIndex - 1)
+        quicksort(arr, pivotIndex + 1, right)
+
+function partition(arr, left, right):
+    # Choose the rightmost element as the pivot
+    pivot = arr[right]
+    i = left - 1
+    
+    for j = left to right - 1:
+        if arr[j] <= pivot then:
+            i = i + 1
+            swap arr[i] with arr[j]
+    
+    swap arr[i + 1] with arr[right]
+    return i + 1
+
+在快速排序的 partition 函数中，i = left - 1 的目的是为后续的元素交换提供一个“边界”指针。下面解释这个设定的原因：
+
+理解 i = left - 1
+i 是用于标记当前数组中哪些元素已经被认为是小于等于基准元素（pivot）的。
+初始化 i = left - 1 是为了在第一个元素之前设置一个“指针”，因为在一开始，还没有任何元素被确定为小于等于 pivot。
+具体执行过程：
+当遍历开始时，j 从 left 开始遍历到 right - 1。对于每个元素 arr[j]，如果它小于或等于 pivot，i 会向前移动一位，
+然后将 arr[i] 与 arr[j] 交换，表示这个新位置是一个比 pivot 小的元素。
+通过初始化 i 为 left - 1，在第一次找到小于 pivot 的元素时，i 会增加到 left，并与第一个元素进行交换，确保在遍历的过程中，i 之前的所有元素都小于等于 pivot。
+为什么要从 left - 1 开始？
+如果 i 从 left 开始，会导致无法正确记录第一个满足条件的元素交换。我们希望 i 在遇到第一个小于 pivot 的元素时，指向的是要被交换的元素的前一个位置。
+
+示例解释：
+假设数组为 [7, 2, 1, 8, 6, 3, 5, 4]，pivot = 4：
+
+初始化时：i = left - 1 = 0 - 1 = -1，此时没有元素被确认小于等于 pivot。
+遍历数组时：
+当 j = 0，arr[0] = 7，不满足小于等于 pivot，不做任何操作。
+当 j = 1，arr[1] = 2，满足小于等于 pivot，i 先加 1 变成 0，然后交换 arr[0] 和 arr[1]，即 arr = [2, 7, 1, 8, 6, 3, 5, 4]。
+当 j = 2，arr[2] = 1，满足条件，i 加 1 变成 1，交换 arr[1] 和 arr[2]，即 arr = [2, 1, 7, 8, 6, 3, 5, 4]。
+这个过程保证了i之前的所有元素都小于等于 pivot。
+
+总结：
+i = left - 1 的设置确保在一开始，没有元素被错误地标记为小于 pivot，它为后续的交换提供了一个有效的起始位置。
